@@ -8,21 +8,23 @@
 Command-line utility to generate an MC-Sym script
 This utility is made to replace mcsymize by Marc Parisien
 
-1.7 (leongs on 2013-12-04): -add a control to check whether the given db_path exists and can be accessed
+1.8 (2014-02-14): -add the option to use relative path for the db_path
 
-1.6 (leongs on 2013-11-04): -code refactoring
-                            -fix an "index out of bounds" error
+1.7 (2013-12-04): -add a control to check whether the given db_path exists and can be accessed
 
-1.5 (leongs on 2013-10-31): -fix the "moose structure" bug
+1.6 (2013-11-04): -code refactoring
+                  -fix an "index out of bounds" error
 
-1.4 (leongs on 2013-10-30): -make the MCSYM-DB path same as the one given in the command-line. This way, no need for a symlink
+1.5 (2013-10-31): -fix the "moose structure" bug
 
-1.3 (leongs on 2013-10-29): -Another round of bugfixes
+1.4 (2013-10-30): -make the MCSYM-DB path same as the one given in the command-line. This way, no need for a symlink
 
-1.2 (leongs on 2013-10-28): -Refactor the make_single_strand method
+1.3 (2013-10-29): -Another round of bugfixes
 
-1.1 (leongs on 2013-10-22): -Make it so that the distance restraints aren't put if both stems are not placed yet, they are placed otherwise
-                            -Fixed a bug in which a link is placed to close a loop when the loop is actually an NCM
+1.2 (2013-10-28): -Refactor the make_single_strand method
+
+1.1 (2013-10-22): -Make it so that the distance restraints aren't put if both stems are not placed yet, they are placed otherwise
+                  -Fixed a bug in which a link is placed to close a loop when the loop is actually an NCM
 """
 
 import os
@@ -352,7 +354,8 @@ def make_single_strand(start, end, sequence, db_path,
                       sequence1, is_loop=False, sequence2="",
                       list_pairs_in_ncm=[],
                       list_placed_in_dangling=[],
-                      library_diversity=None):
+                      library_diversity=None,
+                      use_relative_path=False):
     """
     Build a single strand to either form a loop or to connect stems
     """
@@ -381,11 +384,17 @@ def make_single_strand(start, end, sequence, db_path,
                 if not (placed_connecting and \
                         (temp_end in list_pairs_in_ncm or temp_start in list_pairs_in_ncm)) and \
                    (list_pairs_in_ncm.count(temp_start) < 2 and list_pairs_in_ncm.count(temp_end) < 2):
+                    
+                    if use_relative_path:
+                        pdb_path = os.path.join(os.path.basename(db_path), "ss2", temp_seq, "*.pdb.gz")
+                    else:
+                        pdb_path = os.path.join(db_path, "ss2", temp_seq, "*.pdb.gz")
+                    
                     list_library.append(('lnk = library(\n'
                                          '    pdb( "{pdb_path}" )\n'
                                          '    #{first}:#{second} <- {start}:{end}\n'
                                          '{rmsd_start_line}  rmsd( {rmsd} sidechain && !( pse || lp || hydrogen ) ) \n'
-                                         ')').format(pdb_path=os.path.join(db_path, "ss2", temp_seq, "*.pdb.gz"),
+                                         ')').format(pdb_path=pdb_path,
                                                      first=temp_first,
                                                      second=temp_second,
                                                      start=get_nucleotide_index(sequence1=sequence1,
@@ -423,7 +432,8 @@ def make_loop_library(start, end, sequence, db_path, ncm,
                       sequence1,
                       sequence2="",
                       list_pairs_in_ncm=[],
-                      library_diversity=None):
+                      library_diversity=None,
+                      use_relative_path=False):
     """
     Try to build the loop as an NCM. If not possible, build it manually by a combination of single strands
     """
@@ -443,11 +453,17 @@ def make_loop_library(start, end, sequence, db_path, ncm,
     # see if we can find the loop directly in the NCMs
     if os.path.exists(os.path.join(db_path, str(len(sequence)), sequence)) and \
        [f for f in os.listdir(os.path.join(db_path, str(len(sequence)), sequence)) if f.endswith("pdb.gz")]:
+        
+        if use_relative_path:
+            pdb_path = os.path.join(os.path.basename(db_path), str(len(sequence)), sequence, "*.pdb.gz")
+        else:
+            pdb_path = os.path.join(db_path, str(len(sequence)), sequence, "*.pdb.gz")
+        
         list_library.append(('ncm = library(\n'
                              '    pdb( "{pdb_path}" )\n'
                              '    #{first}:#{second} <- {start}:{end}\n'
                              '{rmsd_start_line}  rmsd( {rmsd} sidechain && !( pse || lp || hydrogen ) ) \n'
-                             ')').format(pdb_path=os.path.join(db_path, str(len(sequence)), sequence, "*.pdb.gz"),
+                             ')').format(pdb_path=pdb_path,
                                          first=first,
                                          second=second,
                                          start=get_nucleotide_index(sequence1=sequence1,
@@ -470,14 +486,15 @@ def make_loop_library(start, end, sequence, db_path, ncm,
                                                                        is_loop=True,
                                                                        list_pairs_in_ncm=list_pairs_in_ncm,
                                                                        list_placed_in_dangling=[],
-                                                                       library_diversity=library_diversity)
+                                                                       library_diversity=library_diversity,
+                                                                       use_relative_path=use_relative_path)
         list_library.extend(ss_list_library)
     list_pairs_in_ncm.append(ncm['start'])
     list_pairs_in_ncm.append(ncm['end'])
     return list_library, list_distance_restraints
 
 
-def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_diversity, library_path=""):
+def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_diversity, use_relative_path=False, library_path=""):
     """
     Format the NCM so it fits the format in MC-Sym script specs
     """
@@ -499,7 +516,10 @@ def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_divers
         pdb_path = library_path
         type="lib"
     else:
-        pdb_path = os.path.join(db_path, ncm['ncm'], ncm['sequence'], '*.pdb.gz')
+        if use_relative_path:
+            pdb_path = os.path.join(os.path.basename(db_path), ncm['ncm'], ncm['sequence'], '*.pdb.gz')
+        else:
+            pdb_path = os.path.join(db_path, ncm['ncm'], ncm['sequence'], '*.pdb.gz')
         type="ncm"
     
     library_st = ('{type} = library(\n'
@@ -529,7 +549,7 @@ def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_divers
     return library_st
 
 
-def assemble_stems(list_regular_stem, library_diversity):
+def assemble_stems(list_regular_stem, library_diversity, use_relative_path=False):
     """
     Get the stem list and tries to assemble each part of the stems
     """
@@ -558,7 +578,8 @@ def assemble_stems(list_regular_stem, library_diversity):
                                                                                          sequence1=sequence1,
                                                                                          sequence2=sequence2,
                                                                                          list_pairs_in_ncm=list_pairs_in_ncm,
-                                                                                         library_diversity=library_diversity)
+                                                                                         library_diversity=library_diversity,
+                                                                                         use_relative_path=use_relative_path)
                     list_library.extend(loop_list_library)
                     list_distance_restraints.extend(loop_list_distance_restraints)
     
@@ -567,7 +588,8 @@ def assemble_stems(list_regular_stem, library_diversity):
                     list_right.append(ncm["end"])
                 else:
                     list_library.append(make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2,
-                                                         library_diversity, library_path=ncm['library_path']))
+                                                         library_diversity, use_relative_path=use_relative_path,
+                                                         library_path=ncm['library_path']))
 
                     list_left.append(ncm['left_start'])
                     list_left.append(ncm['left_end'])
@@ -927,7 +949,7 @@ if __name__ == '__main__':
 
     group.add_argument('--use_high_res_ncm', action="store_true", 
                         dest="use_high_res_ncm",
-                        help='Use use high-resolution NCMs for canonical stacks of base pairs')
+                        help='Use high-resolution NCMs for canonical stacks of base pairs')
 
     parser.add_argument('-mr', '--merge_rmsd', action="store", dest="merge_rmsd", 
                         type=float, default=1.5,
@@ -977,6 +999,10 @@ if __name__ == '__main__':
                               '(e.g. fragment1.pdb.gz,5,7,21,23;fragment2.pdb.gz,9,12,17,19). '
                               'N.B: we recommend protecting the input string using quotes (").'))
 
+    group.add_argument('-ur', '--use_relative_path', action="store_true", 
+                        dest="use_relative_path",
+                        help='Use relative_paths in the NCM paths')
+
     ns = parser.parse_args()
 
     sequence1 = ns.sequence1
@@ -998,6 +1024,7 @@ if __name__ == '__main__':
     library_diversity = ns.library_diversity
     external_library = ns.external_library
     unzipped = ns.unzipped
+    use_relative_path = ns.use_relative_path
 
     # convert the sequences
     sequence1 = sequence1.upper().replace("T", "U")
@@ -1033,7 +1060,7 @@ if __name__ == '__main__':
 
     # build the ncms and lnk for stems
     list_stem_library, list_distance_restraints, \
-    list_extremities, list_pairs_in_ncm, list_ss_extremities = assemble_stems(list_regular_stem, library_diversity)
+    list_extremities, list_pairs_in_ncm, list_ss_extremities = assemble_stems(list_regular_stem, library_diversity, use_relative_path)
 
     #make the distance for the pairs that are not in a x_y NCM
     list_unpaired_pairs = []

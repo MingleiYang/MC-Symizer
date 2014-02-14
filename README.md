@@ -4,3 +4,5 @@ MC-Symizer is a new version of mcsymize by Marc Parisien which is used to automa
 The main difference between this program and its predecessor is the addition of an annealed mode which allows to model two RNA sequences that anneal to each other.
 
 To know more about MC-Symizer, please read `user_manual.pdf`
+
+This code has been developped using Eclipse/PyDev on Linux

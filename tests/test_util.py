@@ -84,6 +84,7 @@ class UtilTest(unittest.TestCase):
                         valid_out = valid_f.read()
 
                     print "testing {name}".format(name=dict_params["name"])
+                    print err
                     self.assertEqual(out.strip(), valid_out.strip())
 
 if __name__ == "__main__":

@@ -39,7 +39,8 @@ class UtilTest(unittest.TestCase):
     def tearDown(self):
         pass
         
-#     def test_generated_script(self):
+    def test_generated_script(self):
+        self.assertEqual("haha", "haha")
 #         def build_args(curr_line):
 #             name, s1, S1, s2, S2 = line.strip().split("\t")
 # 

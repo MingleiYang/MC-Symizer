@@ -10,6 +10,8 @@ import os
 import unittest2 as unittest
 import subprocess
 import shlex
+import urllib
+import tarfile
 
 
 def call_command(command, pipe=None, echo=False):
@@ -29,48 +31,60 @@ class UtilTest(unittest.TestCase):
     def setUp(self):
         # update if needed
         self.MCSYM_DB_PATH = "/u/major/public_html/MC-Sym/DB"
-        self.INPUT_TSV = "tests/data/input_seq_struct.tsv"
-        self.MCSYMIZER_PATH = "src/mcsymizer.py"
         self.DATA_ON_SERVER = "http://major.iric.ca/~leongs/jenkins_tests/MC-Symizer/data.tar.gz"
-        self.DATA_DIR = "tests/data"
-        
-        print os.path.abspath(os.curdir)
+        # build all the paths
+        self.MCSYMIZER_PATH = os.path.abspath(os.path.join(os.curdir, "src", "mcsymizer.py"))
+        self.DATA_ARCHIVE = os.path.abspath(os.path.join(os.curdir, "tests", "data.tar.gz"))
+        self.DATA_DIR = os.path.abspath(os.path.join(os.curdir, "data"))
+
+        # download and create the DATASET if needed
+        if not os.path.exists(self.DATA_DIR):
+            if not os.path.exists(self.DATA_ARCHIVE):
+                # download the data tar file
+                urllib.urlretrieve(self.DATA_ON_SERVER,
+                                   filename=self.DATA_ARCHIVE)
+
+            tar = tarfile.open(self.DATA_ARCHIVE)
+            tar.extractall(path=os.curdir)
 
     def tearDown(self):
         pass
         
     def test_generated_script(self):
-        self.assertEqual("haha", "haha")
-#         def build_args(curr_line):
-#             name, s1, S1, s2, S2 = line.strip().split("\t")
-# 
-#             dict_params = dict(name=name,
-#                                sequence1=s1, structure1=S1,
-#                                sequence2=s2, structure2=S2,
-#                                use_relative_path=True, db_path=self.MCSYM_DB_PATH)
-# 
-#             argument_string = ""
-#             for k, v in dict_params.iteritems():
-#                 if v:
-#                     argument_string += "--{k} ".format(k=k)
-#                     if not isinstance(k, bool):
-#                         argument_string += '"{v}" '.format(v=v)
-#             return argument_string, dict_params
-# 
-#         # read the input file
-#         with open(self.INPUT_TSV, 'rb') as input_file:
-#             for line in input_file:
-#                 if not line.startswith("#") and line.strip():
-#                     args, dict_params = build_args(line)
-#                     out, err = call_command("python {mcsymizer} {args}".format(mcsymizer=self.MCSYMIZER_PATH,
-#                                                                                args=args))
-# 
-#                     # open the valid file
-#                     valid_out = ""
-#                     with open(os.path.join(self.VALID_DIRECTORY, dict_params["name"]+".mcc"), 'rb') as valid_f:
-#                         valid_out = valid_f.read()
-# 
-#                     self.assertEqual(out.strip(), valid_out.strip())
+        def build_args(curr_line):
+            name, s1, S1, s2, S2 = line.split("\t")
+ 
+            dict_params = dict(name=name.strip(),
+                               sequence1=s1.strip(), structure1=S1.strip(),
+                               sequence2=s2.strip(), structure2=S2.strip(), 
+                               db_path=self.MCSYM_DB_PATH)
+ 
+            argument_string = " --use_relative_path "
+            for k, v in dict_params.iteritems():
+                if v:
+                    argument_string += "--{k} ".format(k=k)
+                    argument_string += '"{v}" '.format(v=v)
+            return argument_string, dict_params
+ 
+        # read the input file
+        with open(os.path.join(self.DATA_DIR,
+                               "seq_struct.tsv"), 'rb') as input_file:
+            for line in input_file:
+                if not line.startswith("#") and line.strip():
+                    args, dict_params = build_args(line)
+                    out, err = call_command("python {mcsymizer} {args}".format(mcsymizer=self.MCSYMIZER_PATH,
+                                                                               args=args))
+ 
+                    # open the valid file
+                    valid_out = ""
+                    with open(os.path.join(self.DATA_DIR,
+                                           "validated_generated_scripts",
+                                           dict_params["name"]+".mcc"),
+                              'rb') as valid_f:
+                        valid_out = valid_f.read()
+
+                    print "testing {name}".format(name=dict_params["name"])
+                    self.assertEqual(out.strip(), valid_out.strip())
 
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(CallCommandTest)

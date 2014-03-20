@@ -7,7 +7,7 @@ Testing module the util module
 """
 
 import os
-import unittest2 as unittest
+import unittest
 import subprocess
 import shlex
 import urllib

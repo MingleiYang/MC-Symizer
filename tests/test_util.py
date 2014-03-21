@@ -12,6 +12,7 @@ import subprocess
 import shlex
 import urllib
 import tarfile
+import shutil
 
 
 def call_command(command, pipe=None, echo=False):
@@ -48,8 +49,10 @@ class UtilTest(unittest.TestCase):
             tar.extractall(path=os.curdir)
 
     def tearDown(self):
-        pass
-        
+        # delete the data dir
+        if os.path.exists(self.DATA_DIR):
+            shutil.rmtree(self.DATA_DIR)
+
     def test_generated_script(self):
         def build_args(curr_line):
             name, s1, S1, s2, S2 = line.split("\t")

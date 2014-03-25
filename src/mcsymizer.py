@@ -58,21 +58,17 @@ def get_danglings(starting_ind, struct1, struct2, list_unpaired_p):
         """
         Helper function to find the dangling in the struct
         """
-        # if the structure doesn't "open" (i.e. perfect helix), no need to check for 5p dangling
-        if "(" in struct:
-            # check the 5p first
-            curr_ind = 0
-            while (curr_ind < len(struct) and \
-                   (struct[curr_ind] != "(" or curr_ind+1 in list_unpaired_p)):
-                dict_dangling["5p"].append(curr_ind+starting_ind)
-                curr_ind += 1
-        # if the structure doesn't "close" (i.e. perfect helix), no need to check for 3p dangling
-        if ")" in struct:
-            # now check the 3p
-            curr_ind = len(struct)-1
-            while (curr_ind >= 0 and (struct[curr_ind] != ")" or curr_ind+1 in list_unpaired_p)):
-                dict_dangling["3p"].append(curr_ind+starting_ind)
-                curr_ind -= 1
+        # check the 5p first
+        curr_ind = 0
+        while (curr_ind < len(struct) and \
+               (struct[curr_ind] != "(" or curr_ind+1 in list_unpaired_p)):
+            dict_dangling["5p"].append(curr_ind+starting_ind)
+            curr_ind += 1
+        # now check the 3p
+        curr_ind = len(struct)-1
+        while (curr_ind >= 0 and (struct[curr_ind] != ")" or curr_ind+1 in list_unpaired_p)):
+            dict_dangling["3p"].append(curr_ind+starting_ind)
+            curr_ind -= 1
         return dict_dangling
 
     dict_dangling1 = {"5p":[], "3p":[]}
@@ -364,8 +360,7 @@ def make_single_strand(start, end, sequence, db_path,
                       sequence1, is_loop=False, sequence2="",
                       list_pairs_in_ncm=[],
                       list_placed_in_dangling=[],
-                      library_diversity=None,
-                      use_relative_path=False):
+                      library_diversity=None):
     """
     Build a single strand to either form a loop or to connect stems
     """
@@ -442,8 +437,7 @@ def make_loop_library(start, end, sequence, db_path, ncm,
                       sequence1,
                       sequence2="",
                       list_pairs_in_ncm=[],
-                      library_diversity=None,
-                      use_relative_path=False):
+                      library_diversity=None):
     """
     Try to build the loop as an NCM. If not possible, build it manually by a combination of single strands
     """
@@ -496,15 +490,14 @@ def make_loop_library(start, end, sequence, db_path, ncm,
                                                                        is_loop=True,
                                                                        list_pairs_in_ncm=list_pairs_in_ncm,
                                                                        list_placed_in_dangling=[],
-                                                                       library_diversity=library_diversity,
-                                                                       use_relative_path=use_relative_path)
+                                                                       library_diversity=library_diversity)
         list_library.extend(ss_list_library)
     list_pairs_in_ncm.append(ncm['start'])
     list_pairs_in_ncm.append(ncm['end'])
     return list_library, list_distance_restraints
 
 
-def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_diversity, use_relative_path=False, library_path=""):
+def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_diversity, library_path=""):
     """
     Format the NCM so it fits the format in MC-Sym script specs
     """
@@ -559,7 +552,7 @@ def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_divers
     return library_st
 
 
-def assemble_stems(list_regular_stem, library_diversity, use_relative_path=False):
+def assemble_stems(list_regular_stem, library_diversity):
     """
     Get the stem list and tries to assemble each part of the stems
     """
@@ -588,8 +581,7 @@ def assemble_stems(list_regular_stem, library_diversity, use_relative_path=False
                                                                                          sequence1=sequence1,
                                                                                          sequence2=sequence2,
                                                                                          list_pairs_in_ncm=list_pairs_in_ncm,
-                                                                                         library_diversity=library_diversity,
-                                                                                         use_relative_path=use_relative_path)
+                                                                                         library_diversity=library_diversity)
                     list_library.extend(loop_list_library)
                     list_distance_restraints.extend(loop_list_distance_restraints)
     
@@ -598,7 +590,7 @@ def assemble_stems(list_regular_stem, library_diversity, use_relative_path=False
                     list_right.append(ncm["end"])
                 else:
                     list_library.append(make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2,
-                                                         library_diversity, use_relative_path=use_relative_path,
+                                                         library_diversity,
                                                          library_path=ncm['library_path']))
 
                     list_left.append(ncm['left_start'])
@@ -1078,7 +1070,7 @@ if __name__ == '__main__':
 
     # build the ncms and lnk for stems
     list_stem_library, list_distance_restraints, \
-    list_extremities, list_pairs_in_ncm, list_ss_extremities = assemble_stems(list_regular_stem, library_diversity, use_relative_path)
+    list_extremities, list_pairs_in_ncm, list_ss_extremities = assemble_stems(list_regular_stem, library_diversity)
 
     #make the distance for the pairs that are not in a x_y NCM
     list_unpaired_pairs = []

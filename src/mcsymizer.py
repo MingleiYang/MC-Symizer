@@ -350,9 +350,9 @@ def make_distance_restraint(sequence1, sequence2, s, e, k=0):
     if k > 0:
         # the equation is (4.4 * k + 5.8)
         restraint = (4.4*k)+5.8
-        distance_restraint_string = "distance(  {s_index}:C1'    {e_index}:C1'  0.0  {restraint}  )".format(s_index=get_nucleotide_index(seq=sequence1,
+        distance_restraint_string = "distance(  {s_index}:C1'    {e_index}:C1'  0.0  {restraint}  )".format(s_index=get_nucleotide_index(seq1=sequence1,
                                                                                                                                          pos=s,
-                                                                                                                                         seq=sequence2),
+                                                                                                                                         seq2=sequence2),
                                                                                                             e_index=get_nucleotide_index(seq1=sequence1,
                                                                                                                                          pos=e,
                                                                                                                                          seq2=sequence2),

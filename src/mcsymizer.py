@@ -638,7 +638,7 @@ def make_danglings(structure1, structure2, list_unpaired_pairs):
     dangling1, dangling2 = get_danglings(starting_ind=1, 
                                          struct1=structure1, 
                                          struct2=structure2, 
-                                         list_unpaired_pairs=list_unpaired_pairs)
+                                         list_unpaired_p=list_unpaired_pairs)
 
     # make the relation part
     if dangling1["5p"] == dangling1["3p"][::-1]:

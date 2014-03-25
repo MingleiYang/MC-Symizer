@@ -50,70 +50,80 @@ def is_canonical_ncm(ncm):
     """
     return ncm in CANONICAL_NCM_LIST
 
-def get_danglings(starting_ind, structure1, structure2, list_unpaired_pairs):
+def get_danglings(starting_ind, struct1, struct2, list_unpaired_p):
     """
     Compute the Dangling part(s) of the structure(s)
     """
     def _check_structure_for_dangling(struct, dict_dangling):
-        # chech the 5p first
-        curr_ind = 0
-        while (curr_ind < len(struct) and \
-               (struct[curr_ind] != "(" or curr_ind+1 in list_unpaired_pairs)):
-            dict_dangling["5p"].append(curr_ind+starting_ind)
-            curr_ind += 1
-        # now check the 3p
-        curr_ind = len(struct)-1
-        while (curr_ind >= 0 and (struct[curr_ind] != ")" or curr_ind+1 in list_unpaired_pairs)):
-            dict_dangling["3p"].append(curr_ind+starting_ind)
-            curr_ind -= 1
+        """
+        Helper function to find the dangling in the struct
+        """
+        # if the structure doesn't "open" (i.e. perfect helix), no need to check for 5p dangling
+        if "(" in struct:
+            # check the 5p first
+            curr_ind = 0
+            while (curr_ind < len(struct) and \
+                   (struct[curr_ind] != "(" or curr_ind+1 in list_unpaired_p)):
+                dict_dangling["5p"].append(curr_ind+starting_ind)
+                curr_ind += 1
+        # if the structure doesn't "close" (i.e. perfect helix), no need to check for 3p dangling
+        if ")" in struct:
+            # now check the 3p
+            curr_ind = len(struct)-1
+            while (curr_ind >= 0 and (struct[curr_ind] != ")" or curr_ind+1 in list_unpaired_p)):
+                dict_dangling["3p"].append(curr_ind+starting_ind)
+                curr_ind -= 1
         return dict_dangling
 
     dict_dangling1 = {"5p":[], "3p":[]}
     dict_dangling2 = {"5p":[], "3p":[]}
 
-    if structure1:
-        dict_dangling1 = _check_structure_for_dangling(structure1, dict_dangling1)
+    if struct1:
+        dict_dangling1 = _check_structure_for_dangling(struct1, dict_dangling1)
 
-    if structure2:
-        dict_dangling2 = _check_structure_for_dangling(structure2, dict_dangling2)
+    if struct2:
+        dict_dangling2 = _check_structure_for_dangling(struct2, dict_dangling2)
 
     return dict_dangling1, dict_dangling2
 
-def print_dangling(prefix, dangling):
+def print_dangling(prefix, dang):
     """
     Print the section that corresponds to the Dangling ends in the MC-Sym script
     """
     list_dangling = []
-    if dangling["5p"]:
-        sorted_dang = sorted(dangling["5p"], reverse=True)
+    if dang["5p"]:
+        sorted_dang = sorted(dang["5p"], reverse=True)
         list_dangling.append("(  {prefix}{f}  {remains}  )".format(prefix=prefix,
                                                                    f=sorted_dang[0]+1,
                                                                    remains = "  ".join(["{prefix}{n}".format(prefix=prefix,
                                                                                                              n=n) for n in sorted_dang])))
-    if dangling["3p"]:
-        sorted_dang = sorted(dangling["3p"])
+    if dang["3p"]:
+        sorted_dang = sorted(dang["3p"])
         list_dangling.append("(  {prefix}{f}  {remains}  )".format(prefix=prefix,
                                                                    f=sorted_dang[0]-1,
                                                                    remains = "  ".join(["{prefix}{n}".format(prefix=prefix,
                                                                                                              n=n) for n in sorted_dang])))
     return list_dangling
 
-def get_nucleotide_index(sequence1, pos, sequence2=""):
+def get_nucleotide_index(seq1, pos, seq2=""):
     """
     Convert the nucleotide index to AX or BX so it fits the MC-Sym script formatting
     """
-    if pos <= len(sequence1):
+    if pos <= len(seq1):
         nuc_index = "A{pos}".format(pos=pos)
     else:
-        nuc_index = "B{pos}".format(pos=pos-len(sequence1))
+        nuc_index = "B{pos}".format(pos=pos-len(seq1))
     return nuc_index
 
 
-def get_regular_stems(merged_sequence, pairing_dict, loop_dict, type="regular", 
-                      external_library_dict_list=dict(), external_library_range=[]):
+def get_regular_stems(merged_seq, pairing_d, loop_d, stem_type="regular", 
+                      external_library_dict_l=dict(), external_library_r=[]):
+    """
+    'parse' through the sequence and try to separate into 'stems' and then extract the NCMs
+    """
     list_stem = []
     list_ncm = []
-    list_opening_keys = sorted([int(elem) for elem in pairing_dict[type].keys()])
+    list_opening_keys = sorted([int(elem) for elem in pairing_d[stem_type].keys()])
     previous_key = list_opening_keys[0]
     list_left = []
     list_right = []
@@ -122,21 +132,21 @@ def get_regular_stems(merged_sequence, pairing_dict, loop_dict, type="regular",
         # build the NCM
         left_start = min([previous_key, op])
         left_end = max([previous_key, op])
-        right_start = min([pairing_dict[type][str(previous_key)], pairing_dict[type][str(op)]])
-        right_end = max([pairing_dict[type][str(previous_key)], pairing_dict[type][str(op)]])
+        right_start = min([pairing_d[stem_type][str(previous_key)], pairing_d[stem_type][str(op)]])
+        right_end = max([pairing_d[stem_type][str(previous_key)], pairing_d[stem_type][str(op)]])
 
         list_left.extend(range(left_start, left_end+1))
         list_right.extend(range(right_start, right_end+1))
 
         # do not make NCMs for parts that are already in the external_library
-        if left_start in external_library_range and left_end in external_library_range and \
-           right_start in external_library_range and right_end in external_library_range:
+        if left_start in external_library_r and left_end in external_library_r and \
+           right_start in external_library_r and right_end in external_library_r:
             # determine which library we should load here
-            for library_dict in external_library_dict_list:
+            for library_dict in external_library_dict_l:
                 if left_start in library_dict["library_range"] and left_end in library_dict["library_range"] and \
                    right_start in library_dict["library_range"] and right_end in library_dict["library_range"] and \
                    not library_dict["library_file"] in already_inserted_external_library:
-                    list_ncm.append(dict(sequence=merged_sequence[library_dict["left_start"]-1:library_dict["left_end"]]+merged_sequence[library_dict["right_start"]-1:library_dict["right_end"]],
+                    list_ncm.append(dict(sequence=merged_seq[library_dict["left_start"]-1:library_dict["left_end"]]+merged_seq[library_dict["right_start"]-1:library_dict["right_end"]],
                                          ncm="",
                                          left_start=library_dict["left_start"],
                                          left_end=library_dict["left_end"],
@@ -151,14 +161,14 @@ def get_regular_stems(merged_sequence, pairing_dict, loop_dict, type="regular",
             right = right_end - right_start + 1
     
             ncm = "{l}_{r}".format(l=left, r=right)
-            sequence = merged_sequence[left_start-1:left_end]+merged_sequence[right_start-1:right_end]
+            sequence = merged_seq[left_start-1:left_end]+merged_seq[right_start-1:right_end]
     
             # if not in ncm list, or not in MCSYM-DB, we probably have a stem that just reached its end
             if ncm not in POSSIBLE_NCM_LIST or \
                not (os.path.exists(os.path.join(db_path, ncm, sequence)) and \
                     [f for f in os.listdir(os.path.join(db_path, ncm, sequence)) if f.endswith("pdb.gz")]):
                 if not list_ncm:
-                    list_ncm.append(dict(sequence=merged_sequence[left_start-1]+merged_sequence[right_end-1],
+                    list_ncm.append(dict(sequence=merged_seq[left_start-1]+merged_seq[right_end-1],
                                          start=left_start,
                                          end=right_end,
                                          is_loop=False,
@@ -178,11 +188,11 @@ def get_regular_stems(merged_sequence, pairing_dict, loop_dict, type="regular",
                                      is_loop=False,
                                      is_single_strand=False,
                                      library_path=""))
-            if str(left_end) in loop_dict:
-                sequence = merged_sequence[left_end-1:loop_dict[str(left_end)]]
+            if str(left_end) in loop_d:
+                sequence = merged_seq[left_end-1:loop_d[str(left_end)]]
                 ncm = len(sequence)
                 start = left_end
-                end = loop_dict[str(left_end)]
+                end = loop_d[str(left_end)]
                 list_ncm.append(dict(sequence=sequence,
                                      ncm=ncm,
                                      start=start,
@@ -198,60 +208,60 @@ def get_pairs(dotBracket):
     """
     INPUT dotBracket => OUTPUT dict containing lists of BP for regulars and pseudoknots
     """
-    pairing_dict = dict(regular=dict(), pseudoknot=dict())
+    pair_dict = dict(regular=dict(), pseudoknot=dict())
     regular_opener = []
     pseudoknot_opener = []
     for i, element in enumerate(dotBracket):
         if element == "(":
             regular_opener.append(i)
         elif element == ")":
-            pairing_dict["regular"][str(regular_opener.pop(-1)+1)] = i+1
+            pair_dict["regular"][str(regular_opener.pop(-1)+1)] = i+1
         elif element == "[":
             pseudoknot_opener.append(i)
         elif element == "]":
-            pairing_dict["pseudoknot"][str(pseudoknot_opener.pop(-1)+1)] = i+1
+            pair_dict["pseudoknot"][str(pseudoknot_opener.pop(-1)+1)] = i+1
 
-    return pairing_dict
+    return pair_dict
 
-def find_loops(sequence1, dotBracket, sequence2=""):
+def find_loops(seq1, struct, seq2=""):
     """
-    INPUT dotBracket => OUTPUT list of dict with key=beginning of loop and value=end of loop
+    INPUT struct => OUTPUT list of dict with key=beginning of loop and value=end of loop
     """
     loop_dict = dict()
-    last_index = dotBracket.find("(")
+    last_index = struct.find("(")
     i = last_index
-    while len(dotBracket)-1 > i >=0:
+    while len(struct)-1 > i >=0:
         i += 1
-        if dotBracket[i] == "(":
+        if struct[i] == "(":
             last_index = i
-        if dotBracket[i] == ")":
-            if not (last_index < len(sequence1) <= i):
+        if struct[i] == ")":
+            if not (last_index < len(seq1) <= i):
                 loop_dict[str(last_index+1)] = i+1
-                last_index = dotBracket.find("(", i+1)
+                last_index = struct.find("(", i+1)
                 i = last_index
 
     return loop_dict
 
-def find_long_ss(sequence1, dotBracket,
-                 sequence2="", list_placed_in_dangling=[],
-                 pairing_dict=dict(), list_unpaired_pairs=[]):
+def find_long_ss(seq1, struct,
+                 seq2="", list_placed_in_dang=[],
+                 pair_dict={}, list_unpaired_p=[]):
     """
-    INPUT dotBracket => OUTPUT list of tuple for the long single strands
+    INPUT struct => OUTPUT list of tuple for the long single strands
     """
     list_long_ss = []
     begin = 0
     end = None
     # list_broken pairs is used to filter the pairs that can't be accepted (because they're not in an NCM)
-    list_broken_pairs = list(list_placed_in_dangling) + list_unpaired_pairs
-    for op, cl in pairing_dict["regular"].iteritems():
+    list_broken_pairs = list(list_placed_in_dang) + list_unpaired_p
+    for op, cl in pair_dict["regular"].iteritems():
         if int(op) in list_broken_pairs or int(cl) in list_broken_pairs:
             list_broken_pairs.append(int(op))
             list_broken_pairs.append(int(cl))
     
-    for i, char in enumerate(dotBracket):
+    for i, char in enumerate(struct):
         if char in ['(', ')'] and not i+1 in list_broken_pairs:
             if begin != None and end != None and \
-               not (begin < len(sequence1) <= end+1):
+               not (begin < len(seq1) <= end+1):
                 list_long_ss.append((begin+1, end+2))
 
             end = None
@@ -259,47 +269,47 @@ def find_long_ss(sequence1, dotBracket,
         else:
             end = i
 
-
     return list_long_ss
 
-def validate_params(sequence1, sequence2, structure1, structure2, db_path):
+
+def validate_params(seq1, seq2, struct1, struct2, db_p):
     """
     Make sure the sequence and the structure are valid, i.e. same length, only AUGC, balanced pairs
     """
-    merged_sequence = sequence1+sequence2
-    merged_structure = structure1+structure2
-    if len(merged_sequence) != len(merged_structure):
+    merged_seq = seq1+seq2
+    merged_struct = struct1+struct2
+    if len(merged_seq) != len(merged_struct):
         sys.stderr.write("The sequence(s) and the structure(s) must be of the same length")
         sys.exit()
 
-    for n in merged_sequence:
+    for n in merged_seq:
         if n not in ["A", "U", "G", "C"]:
             sys.stderr.write("Invalid character found in sequence: {n}".format(n=n))
             sys.exit()
 
-    if "()" in structure1 or "[]" in structure1 or \
-       "()" in structure2 or "[]" in structure2:
+    if "()" in struct1 or "[]" in struct1 or \
+       "()" in struct2 or "[]" in struct2:
         sys.stderr.write("Cannot model () or []")
         sys.exit()
 
-    if (merged_structure.count("(") != merged_structure.count(")")) or \
-       (merged_structure.count("[") != merged_structure.count("]")):
+    if (merged_struct.count("(") != merged_struct.count(")")) or \
+       (merged_struct.count("[") != merged_struct.count("]")):
         sys.stderr.write("The structure is unbalanced")
         sys.exit()
 
-    if not os.path.exists(db_path):
-        sys.stderr.write("{db_path} doesn't exists".format(db_path=db_path))
+    if not os.path.exists(db_p):
+        sys.stderr.write("{db_path} doesn't exists".format(db_path=db_p))
         sys.exit()
 
 
-def make_external_library_dict(external_library):
+def make_external_library_dict(external_l):
     """
     Parse the external library String to make it into a list of dict containing the following keys:
     """
     external_library_range = []
     external_library_dict_list = []
-    if external_library:
-        list_library_string = external_library.split(";")
+    if external_l:
+        list_library_string = external_l.split(";")
         for library_string in list_library_string:
             library_params = library_string.split(",")
             if len(library_params) != 5:
@@ -340,12 +350,12 @@ def make_distance_restraint(sequence1, sequence2, s, e, k=0):
     if k > 0:
         # the equation is (4.4 * k + 5.8)
         restraint = (4.4*k)+5.8
-        distance_restraint_string = "distance(  {s_index}:C1'    {e_index}:C1'  0.0  {restraint}  )".format(s_index=get_nucleotide_index(sequence1=sequence1,
+        distance_restraint_string = "distance(  {s_index}:C1'    {e_index}:C1'  0.0  {restraint}  )".format(s_index=get_nucleotide_index(seq=sequence1,
                                                                                                                                          pos=s,
-                                                                                                                                         sequence2=sequence2),
-                                                                                                            e_index=get_nucleotide_index(sequence1=sequence1,
+                                                                                                                                         seq=sequence2),
+                                                                                                            e_index=get_nucleotide_index(seq1=sequence1,
                                                                                                                                          pos=e,
-                                                                                                                                         sequence2=sequence2),
+                                                                                                                                         seq2=sequence2),
                                                                                                             restraint=restraint)
     return distance_restraint_string
 
@@ -397,12 +407,12 @@ def make_single_strand(start, end, sequence, db_path,
                                          ')').format(pdb_path=pdb_path,
                                                      first=temp_first,
                                                      second=temp_second,
-                                                     start=get_nucleotide_index(sequence1=sequence1,
+                                                     start=get_nucleotide_index(seq1=sequence1,
                                                                                 pos=temp_start,
-                                                                                sequence2=sequence2),
-                                                     end=get_nucleotide_index(sequence1=sequence1,
+                                                                                seq2=sequence2),
+                                                     end=get_nucleotide_index(seq1=sequence1,
                                                                               pos=temp_end,
-                                                                              sequence2=sequence2),
+                                                                              seq2=sequence2),
                                                      rmsd_start_line=rmsd_start_line,
                                                      rmsd=ncm_rmsd))
 
@@ -466,12 +476,12 @@ def make_loop_library(start, end, sequence, db_path, ncm,
                              ')').format(pdb_path=pdb_path,
                                          first=first,
                                          second=second,
-                                         start=get_nucleotide_index(sequence1=sequence1,
+                                         start=get_nucleotide_index(seq1=sequence1,
                                                                     pos=ncm['start'],
-                                                                    sequence2=sequence2),
-                                         end=get_nucleotide_index(sequence1=sequence1,
+                                                                    seq2=sequence2),
+                                         end=get_nucleotide_index(seq1=sequence1,
                                                                   pos=ncm['end'],
-                                                                  sequence2=sequence2),
+                                                                  seq2=sequence2),
                                          rmsd_start_line=rmsd_start_line,
                                          rmsd=ncm_rmsd))
     else:
@@ -532,18 +542,18 @@ def make_ncm_library(ncm, use_high_res_ncm, sequence1, sequence2, library_divers
                               second=second,
                               third=third,
                               fourth=fourth,
-                              l_s=get_nucleotide_index(sequence1=sequence1,
+                              l_s=get_nucleotide_index(seq1=sequence1,
                                                        pos=ncm['left_start'],
-                                                       sequence2=sequence2),
-                              l_e=get_nucleotide_index(sequence1=sequence1,
+                                                       seq2=sequence2),
+                              l_e=get_nucleotide_index(seq1=sequence1,
                                                        pos=ncm['left_end'],
-                                                       sequence2=sequence2),
-                              r_s=get_nucleotide_index(sequence1=sequence1,
+                                                       seq2=sequence2),
+                              r_s=get_nucleotide_index(seq1=sequence1,
                                                        pos=ncm['right_start'],
-                                                       sequence2=sequence2),
-                              r_e=get_nucleotide_index(sequence1=sequence1,
+                                                       seq2=sequence2),
+                              r_e=get_nucleotide_index(seq1=sequence1,
                                                        pos=ncm['right_end'],
-                                                       sequence2=sequence2),
+                                                       seq2=sequence2),
                               rmsd_start_line=rmsd_start_line,
                               rmsd=ncm_rmsd)
     return library_st
@@ -626,8 +636,8 @@ def make_danglings(structure1, structure2, list_unpaired_pairs):
     dangling2 = dict()
     list_placed_in_dangling = []
     dangling1, dangling2 = get_danglings(starting_ind=1, 
-                                         structure1=structure1, 
-                                         structure2=structure2, 
+                                         struct1=structure1, 
+                                         struct2=structure2, 
                                          list_unpaired_pairs=list_unpaired_pairs)
 
     # make the relation part
@@ -1041,30 +1051,30 @@ if __name__ == '__main__':
     merged_sequence = sequence1+sequence2
     merged_structure = structure1+structure2
     # validate to make sure everything is ok before making computations
-    validate_params(sequence1=sequence1,
-                    sequence2=sequence2,
-                    structure1=structure1,
-                    structure2=structure2,
-                    db_path=db_path)
+    validate_params(seq1=sequence1,
+                    seq2=sequence2,
+                    struct1=structure1,
+                    struct2=structure2,
+                    db_p=db_path)
 
     # make the library_dict
-    external_library_dict_list, external_library_range = make_external_library_dict(external_library=external_library)
+    external_library_dict_list, external_library_range = make_external_library_dict(external_l=external_library)
 
     # get each pairs
     pairing_dict = get_pairs(dotBracket=merged_structure)
 
     # get the position of each loop
-    loop_dict = find_loops(sequence1=sequence1,
-                           dotBracket=merged_structure,
-                           sequence2=sequence2)
+    loop_dict = find_loops(seq1=sequence1,
+                           struct=merged_structure,
+                           seq2=sequence2)
 
     # build the NCMS within stems
-    list_regular_stem = get_regular_stems(merged_sequence=merged_sequence,
-                                          pairing_dict=pairing_dict,
-                                          loop_dict=loop_dict,
-                                          type="regular",
-                                          external_library_dict_list=external_library_dict_list,
-                                          external_library_range=external_library_range)
+    list_regular_stem = get_regular_stems(merged_seq=merged_sequence,
+                                          pairing_d=pairing_dict,
+                                          loop_d=loop_dict,
+                                          stem_type="regular",
+                                          external_library_dict_l=external_library_dict_list,
+                                          external_library_r=external_library_range)
 
     # build the ncms and lnk for stems
     list_stem_library, list_distance_restraints, \
@@ -1077,12 +1087,12 @@ if __name__ == '__main__':
             list_unpaired_pairs.append(int(opening))
             list_unpaired_pairs.append(int(closing))
             restraint = 3.0
-            list_distance_restraints.append("distance(  {s_index}:C1'    {e_index}:C1'  0.0  {restraint}  )".format(s_index=get_nucleotide_index(sequence1=sequence1,
+            list_distance_restraints.append("distance(  {s_index}:C1'    {e_index}:C1'  0.0  {restraint}  )".format(s_index=get_nucleotide_index(seq1=sequence1,
                                                                                                                                                  pos=int(opening),
-                                                                                                                                                 sequence2=sequence2),
-                                                                                                                    e_index=get_nucleotide_index(sequence1=sequence1,
+                                                                                                                                                 seq2=sequence2),
+                                                                                                                    e_index=get_nucleotide_index(seq1=sequence1,
                                                                                                                                                  pos=int(closing),
-                                                                                                                                                 sequence2=sequence2),
+                                                                                                                                                 seq2=sequence2),
                                                                                                                     restraint=restraint))
 
     # do the dangling
@@ -1096,9 +1106,9 @@ if __name__ == '__main__':
         list_placed_in_dangling = []
 
     # get the long ss
-    long_ss_list = find_long_ss(sequence1=sequence1, dotBracket=merged_structure,
-                                sequence2=sequence2, list_placed_in_dangling=list_placed_in_dangling,
-                                pairing_dict=pairing_dict, list_unpaired_pairs=list_unpaired_pairs)
+    long_ss_list = find_long_ss(seq1=sequence1, struct=merged_structure,
+                                seq2=sequence2, list_placed_in_dang=list_placed_in_dangling,
+                                pairing_d=pairing_dict, list_unpaired_p=list_unpaired_pairs)
 
     # make the merge part and add remaining links
     # start by putting the first stem
@@ -1157,8 +1167,8 @@ if __name__ == '__main__':
     # add the danglings
     if dangling and (dangling1 or dangling2):
         list_merge.append("//------ dangling ends --------")
-        list_merge.extend(print_dangling(prefix="A", dangling=dangling1))
-        list_merge.extend(print_dangling(prefix="B", dangling=dangling2))
+        list_merge.extend(print_dangling(prefix="A", dang=dangling1))
+        list_merge.extend(print_dangling(prefix="B", dang=dangling2))
 
     # compute the distance restraints for pseudoknots
     for pseudo_open, pseudo_close in pairing_dict["pseudoknot"].iteritems():

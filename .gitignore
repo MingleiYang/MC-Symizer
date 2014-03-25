@@ -1,3 +1,5 @@
 # Eclipse Project files #
 #########################
 .project
+.pyc
+.pydevproject

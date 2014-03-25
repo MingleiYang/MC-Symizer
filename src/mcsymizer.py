@@ -1108,7 +1108,7 @@ if __name__ == '__main__':
     # get the long ss
     long_ss_list = find_long_ss(seq1=sequence1, struct=merged_structure,
                                 seq2=sequence2, list_placed_in_dang=list_placed_in_dangling,
-                                pairing_d=pairing_dict, list_unpaired_p=list_unpaired_pairs)
+                                pair_dict=pairing_dict, list_unpaired_p=list_unpaired_pairs)
 
     # make the merge part and add remaining links
     # start by putting the first stem

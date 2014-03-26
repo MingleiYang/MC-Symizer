@@ -1147,7 +1147,7 @@ if __name__ == '__main__':
 
     # compute the distance restraints for pseudoknots
     for pseudo_open, pseudo_close in pairing_dict["pseudoknot"].iteritems():
-        list_distance_restraints.append(make_distance_restraint(seq=sequence1, int(pseudo_open), int(pseudo_close), k=1))
+        list_distance_restraints.append(make_distance_restraint(sequence1, int(pseudo_open), int(pseudo_close), k=1))
 
     print_script(sequence1, structure1,
                  sequence2, structure2,

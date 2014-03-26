@@ -48,6 +48,8 @@ Keyword |Alternative Keyword |Option | Comment
 --use_high_res_ncm | | | Use high-resolution NCMs for canonical stacks of base pairs
 --merge_rmsd | -mr | The Merge RMSD threshold in Angstrom. Default is `1.5` | The quality of the welding of two  consecutive NCM is controlled through this parameter
 --model_diversity | -md | The Model Diversity threshold in Angstrom. Default is `3.0` | This parameter controls the resemblance of generated models
+--library_diversity | -ld | The Library Diversity threshold in Angstrom. Default is 0.5 if the NCM is non canonical, 0.1 else | This parameter controls the diversity of generated models
+--clash_threshold | -ct | The Clash Threshold in Angstrom. Default is `1.5` | The clash threshold Prevents non-bonded atoms to be too close to one another
 --bond_threshold | -bt | The Bond Threshold in Angstrom. Default is `2.0` | The bond threshold for covalent bonds in the backbone
 --construction_method | -cm | The accepted values are “`ccm`” or “`estimate`”. Default is “`ccm`” | “`ccm`” stands for Cyclic Coordinate Minimization. “`estimate`” stands for Interpolation Estimation 
 --exploration_method | -em | The accepted values are “`probabilistic`” or “`exhaustive`”. Default is  “`probabilistic`” | “`probabilistic`” allows back-jumps and random domain assignments. “`exhaustive`” is a classic back-track algorithm 
@@ -57,6 +59,7 @@ Keyword |Alternative Keyword |Option | Comment
 --unzipped | -u | | If this option is activated, the output structures will not be in a compressed format
 --external_library | -el | Use the pdb.gz fragment as library, at defined position (e.g.  `fragment1.pdb.gz,5,7,21,23;fragment2.pdb.gz,9,12,17,19`). N.B: we recommend protecting the input string using quotes (")
 --use_relative_path | -ur | | Use relative path to the MCSYM-DB directory (legacy behavior)
+--no_header | -nh | | Do not print the header with the version number and copyright in the script. This feature is only useful for the tests as the header might be slightly different due to the version change
 
 Additional information about the parameters can be found in pages 36-37 of the MC-Pipeline manual 
 (http://www.major.iric.ca/MC-Pipeline/manual.pdf). 

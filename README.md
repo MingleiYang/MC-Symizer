@@ -14,7 +14,7 @@ MC-Symizer was used on Linux, Windows and MacOSX.
 ## Requirements 
 
 To generate an MC-Sym script using MC-Symizer, the followings are needed: 
-* Python 2.7 or newer installed on your computer 
+* Python 2.7.x
 * a copy of MC-Sym’s NCM database (usually named “MCSYM-DB”) 
 * the sequence(s) 
 * the secondary structure(s) in the dot-bracket notation 

@@ -935,10 +935,6 @@ if __name__ == '__main__':
                         default="structure",
                         help='Name')
 
-    group.add_argument('--use_high_res_ncm', action="store_true", 
-                        dest="use_high_res_ncm",
-                        help='Use high-resolution NCMs for canonical stacks of base pairs')
-
     parser.add_argument('-mr', '--merge_rmsd', action="store", dest="merge_rmsd", 
                         type=float, default=1.5,
                         help='Merge RMSD threshold')
@@ -950,6 +946,10 @@ if __name__ == '__main__':
     group.add_argument('-ld', '--library_diversity', action="store", dest="library_diversity", 
                         type=float, default=None,
                         help='Library diversity threshold in Angstrom')
+
+    group.add_argument('--use_high_res_ncm', action="store_true", 
+                        dest="use_high_res_ncm",
+                        help='Use high-resolution NCMs for canonical stacks of base pairs')
 
     parser.add_argument('-ct', '--clash_threshold', action="store", dest="clash_threshold", 
                         type=float, default=1.5,
@@ -987,11 +987,11 @@ if __name__ == '__main__':
                               '(e.g. fragment1.pdb.gz,5,7,21,23;fragment2.pdb.gz,9,12,17,19). '
                               'N.B: we recommend protecting the input string using quotes (").'))
 
-    group.add_argument('-ur', '--use_relative_path', action="store_true", 
+    parser.add_argument('-ur', '--use_relative_path', action="store_true", 
                         dest="use_relative_path",
                         help='Use relative_paths in the NCM paths')
 
-    group.add_argument('-nh', '--no_header', action="store_false", 
+    parser.add_argument('-nh', '--no_header', action="store_false", 
                         dest="no_header",
                         help='Do not print the header in the script')
 

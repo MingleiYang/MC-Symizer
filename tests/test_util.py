@@ -62,7 +62,7 @@ class UtilTest(unittest.TestCase):
                                sequence2=s2.strip(), structure2=S2.strip(), 
                                db_path=self.MCSYM_DB_PATH)
  
-            argument_string = " --use_relative_path "
+            argument_string = " --use_relative_path --no_header "
             for k, v in dict_params.iteritems():
                 if v:
                     argument_string += "--{k} ".format(k=k)

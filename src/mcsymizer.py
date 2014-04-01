@@ -54,20 +54,19 @@ def get_danglings(starting_ind, struct1, struct2, list_unpaired_p):
     """
     Compute the Dangling part(s) of the structure(s)
     """
-    def _check_structure_for_dangling(struct, dict_dangling, no_5p=False, no_3p=False):
+    def _check_structure_for_dangling(struct, dict_dangling):
         """
         Helper function to find the dangling in the struct
         """
         # check the 5p first
-        if not no_5p:
+        if "(" in struct:
             curr_ind = 0
             while (curr_ind < len(struct) and \
                    (struct[curr_ind] != "(" or curr_ind+1 in list_unpaired_p)):
                 dict_dangling["5p"].append(curr_ind+starting_ind)
                 curr_ind += 1
-
         # now check the 3p
-        if not no_3p:
+        if ")" in struct:
             curr_ind = len(struct)-1
             while (curr_ind >= 0 and (struct[curr_ind] != ")" or curr_ind+1 in list_unpaired_p)):
                 dict_dangling["3p"].append(curr_ind+starting_ind)
@@ -77,14 +76,11 @@ def get_danglings(starting_ind, struct1, struct2, list_unpaired_p):
     dict_dangling1 = {"5p":[], "3p":[]}
     dict_dangling2 = {"5p":[], "3p":[]}
 
-    if struct2:
-        # check only for 5p dangling for struct1
-        dict_dangling1 = _check_structure_for_dangling(struct1, dict_dangling1, no_3p=True)
-        # check only for 3p dangling for the struct2
-        dict_dangling2 = _check_structure_for_dangling(struct2, dict_dangling2, no_5p=True)
-    else:
-        # check both danglings
+    if struct1:
         dict_dangling1 = _check_structure_for_dangling(struct1, dict_dangling1)
+
+    if struct2:
+        dict_dangling2 = _check_structure_for_dangling(struct2, dict_dangling2)
 
     return dict_dangling1, dict_dangling2
 

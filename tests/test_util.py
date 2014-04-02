@@ -60,7 +60,7 @@ class UtilTest(unittest.TestCase):
             dict_params = dict(name=name.strip(),
                                sequence1=s1.strip(), structure1=S1.strip(),
                                sequence2=s2.strip(), structure2=S2.strip(), 
-                               db_path=self.MCSYM_DB_PATH, library_diversity=0)
+                               db_path=self.MCSYM_DB_PATH, library_diversity="0")
  
             argument_string = " --use_relative_path --no_header "
             for k, v in dict_params.iteritems():
@@ -88,7 +88,11 @@ class UtilTest(unittest.TestCase):
 
                     print "testing {name}".format(name=dict_params["name"])
                     print err
-                    self.assertEqual(out.strip(), valid_out.strip())
+                    list_line_out = out.strip().splitlines()
+                    list_line_valid = valid_out.strip().splitlines()
+                    self.assertEqual(len(list_line_out), len(list_line_valid))
+                    for i, line_out in enumerate(list_line_out):
+                        self.assertEqual(line_out.strip(), list_line_valid[i].strip())
 
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(CallCommandTest)

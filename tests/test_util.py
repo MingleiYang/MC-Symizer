@@ -60,7 +60,7 @@ class UtilTest(unittest.TestCase):
             dict_params = dict(name=name.strip(),
                                sequence1=s1.strip(), structure1=S1.strip(),
                                sequence2=s2.strip(), structure2=S2.strip(), 
-                               db_path=self.MCSYM_DB_PATH)
+                               db_path=self.MCSYM_DB_PATH, library_diversity=0)
  
             argument_string = " --use_relative_path --no_header "
             for k, v in dict_params.iteritems():

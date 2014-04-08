@@ -1,0 +1,102 @@
+// ==================== Sequence ====================
+
+sequence( r A1  CUACUACGAGAGGACCG )
+//              .(.(.....)...)...
+
+// ==================== Relations ====================
+relation
+(
+A10:  A17 { file( "helixA_RNA" ) stack } 1
+A1:  A4 { file( "helixA_RNA" ) stack } 1
+)
+// ==================== Library ====================
+
+//----- Fragment 1 -----
+lnk_01 = library(
+    pdb( "DB/ss2/CU/*.pdb.gz" )
+    #1:#2 <- A4:A5
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_02 = library(
+    pdb( "DB/ss2/UA/*.pdb.gz" )
+    #1:#2 <- A5:A6
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_03 = library(
+    pdb( "DB/ss2/AC/*.pdb.gz" )
+    #1:#2 <- A6:A7
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_04 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A7:A8
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_05 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A8:A9
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_06 = library(
+    pdb( "DB/ss2/AG/*.pdb.gz" )
+    #1:#2 <- A9:A10
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+// ===================== Backtrack =====================
+structure = backtrack
+(
+    lnk_01
+    merge( lnk_02  1.5 )
+    merge( lnk_03  1.5 )
+    merge( lnk_04  1.5 )
+    merge( lnk_05  1.5 )
+    merge( lnk_06  1.5 )
+    //------ dangling ends --------
+    (  A4  A3  A2  A1  )
+    (  A10  A11  A12  A13  A14  A15  A16  A17  )
+)
+
+// =================== Distance Restraints ===================
+distance(  A4:C1'    A5:C1'  0.0  10.2  )
+distance(  A4:C1'    A6:C1'  0.0  14.6  )
+distance(  A4:C1'    A7:C1'  0.0  19.0  )
+distance(  A4:C1'    A8:C1'  0.0  23.4  )
+distance(  A4:C1'    A9:C1'  0.0  27.8  )
+distance(  A5:C1'    A10:C1'  0.0  27.8  )
+distance(  A6:C1'    A10:C1'  0.0  23.4  )
+distance(  A7:C1'    A10:C1'  0.0  19.0  )
+distance(  A8:C1'    A10:C1'  0.0  14.6  )
+distance(  A9:C1'    A10:C1'  0.0  10.2  )
+distance(  A2:C1'    A14:C1'  0.0  3.0  )
+// =================== Backtrack Restraints ===================
+clash
+(
+    structure
+    1.5 !( pse || lp || hydrogen )
+)
+backtrack_rst
+(
+    structure
+    width_limit  = 25%,
+    height_limit = 33%,
+    method       = probabilistic
+)
+// =================== Ribose Restraints ===================
+ribose_rst
+(
+    structure
+    method    = ccm,
+    pucker    = C3p_endo,
+    threshold = 2.0
+)
+// =================== Exploration Initialization =========
+explore
+(
+    structure
+    option(
+    model_limit = 1000,
+    time_limit  = 30m,
+    seed        = 3210 )
+    rmsd( 3.0 sidechain && !( pse || lp || hydrogen ) )
+    pdb( "struct_000043056" zipped )
+)

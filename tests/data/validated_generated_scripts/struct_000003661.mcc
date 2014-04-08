@@ -1,0 +1,790 @@
+// ==================== Sequence ====================
+
+sequence( r A1  AAAACGACUCUCGGCAACGGAUAUCUCGGCUCUCGCAUCGAUGAAGAACGUAGCGAAAUGCGAUACUUGGUGUGAAUUGCAGAAUCCCGUGAACCAUCGAGUCUUUGAACGCAAGUUGCGCCCCAAGCCUUCUGGCCGAGGGCACGUCUGCCUGGGUGUCACAA )
+//              .....((((((((((............((((((((((((((...........)))..))))))....((((.....................))))..)))))....(((....)))..(((((..(((....))).).))))......))).)))))))....
+
+// ==================== Relations ====================
+relation
+(
+A160:  A164 { file( "helixA_RNA" ) stack } 1
+A1:  A6 { file( "helixA_RNA" ) stack } 1
+)
+// ==================== Library ====================
+
+//----- Fragment 1 -----
+ncm_01 = library(
+    pdb( "DB/2_2/GAUC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A6:A7, A159:A160
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_02 = library(
+    pdb( "DB/2_2/ACGU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A7:A8, A158:A159
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_03 = library(
+    pdb( "DB/2_2/CUUG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A8:A9, A157:A158
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_04 = library(
+    pdb( "DB/2_2/UCGU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A9:A10, A156:A157
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_05 = library(
+    pdb( "DB/2_2/CUGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A10:A11, A155:A156
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_06 = library(
+    pdb( "DB/2_2/UCGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A11:A12, A154:A155
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_07 = library(
+    pdb( "DB/2_3/CGCUG/*.pdb.gz" )
+    #1:#2, #3:#5 <- A12:A13, A152:A154
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_08 = library(
+    pdb( "DB/2_2/GGCC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A13:A14, A151:A152
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_09 = library(
+    pdb( "DB/2_2/GCGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A14:A15, A150:A151
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 2 -----
+lnk_01 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A149:A150
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_02 = library(
+    pdb( "DB/ss2/CU/*.pdb.gz" )
+    #1:#2 <- A148:A149
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_03 = library(
+    pdb( "DB/ss2/UC/*.pdb.gz" )
+    #1:#2 <- A147:A148
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_04 = library(
+    pdb( "DB/ss2/GU/*.pdb.gz" )
+    #1:#2 <- A146:A147
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_05 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A145:A146
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_06 = library(
+    pdb( "DB/ss2/AC/*.pdb.gz" )
+    #1:#2 <- A144:A145
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_07 = library(
+    pdb( "DB/ss2/CA/*.pdb.gz" )
+    #1:#2 <- A143:A144
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_10 = library(
+    pdb( "DB/2_2/GCGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A120:A121, A142:A143
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_11 = library(
+    pdb( "DB/2_2/CCGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A121:A122, A141:A142
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_12 = library(
+    pdb( "DB/2_2/CCGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A122:A123, A140:A141
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_13 = library(
+    pdb( "DB/2_3/CCGAG/*.pdb.gz" )
+    #1:#2, #3:#5 <- A123:A124, A138:A140
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 3 -----
+lnk_08 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A137:A138
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_09 = library(
+    pdb( "DB/ss2/CC/*.pdb.gz" )
+    #1:#2 <- A136:A137
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_14 = library(
+    pdb( "DB/2_2/GCGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A127:A128, A135:A136
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_15 = library(
+    pdb( "DB/2_2/CCGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A128:A129, A134:A135
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_16 = library(
+    pdb( "DB/6/CUUCUG/*.pdb.gz" )
+    #1:#6 <- A129:A134
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 4 -----
+lnk_10 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A119:A120
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_11 = library(
+    pdb( "DB/ss2/GC/*.pdb.gz" )
+    #1:#2 <- A118:A119
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_12 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A117:A118
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_17 = library(
+    pdb( "DB/2_2/AAUU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A108:A109, A116:A117
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_18 = library(
+    pdb( "DB/2_2/ACGU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A109:A110, A115:A116
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_19 = library(
+    pdb( "DB/6/CGCAAG/*.pdb.gz" )
+    #1:#6 <- A110:A115
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_13 = library(
+    pdb( "DB/ss2/CA/*.pdb.gz" )
+    #1:#2 <- A124:A125
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_14 = library(
+    pdb( "DB/ss2/AA/*.pdb.gz" )
+    #1:#2 <- A125:A126
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 5 -----
+lnk_15 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A107:A108
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_16 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A106:A107
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_17 = library(
+    pdb( "DB/ss2/UU/*.pdb.gz" )
+    #1:#2 <- A105:A106
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_18 = library(
+    pdb( "DB/ss2/UU/*.pdb.gz" )
+    #1:#2 <- A104:A105
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_19 = library(
+    pdb( "DB/ss2/CU/*.pdb.gz" )
+    #1:#2 <- A103:A104
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_20 = library(
+    pdb( "DB/2_2/GGUC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A28:A29, A102:A103
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_21 = library(
+    pdb( "DB/2_2/GCGU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A29:A30, A101:A102
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_22 = library(
+    pdb( "DB/2_2/CUAG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A30:A31, A100:A101
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_23 = library(
+    pdb( "DB/2_2/UCGA/*.pdb.gz" )
+    #1:#2, #3:#4 <- A31:A32, A99:A100
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_20 = library(
+    pdb( "DB/ss2/CU/*.pdb.gz" )
+    #1:#2 <- A32:A33
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 7 -----
+ncm_24 = library(
+    pdb( "DB/2_2/UCGA/*.pdb.gz" )
+    #1:#2, #3:#4 <- A33:A34, A62:A63
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_25 = library(
+    pdb( "DB/2_2/CGCG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A34:A35, A61:A62
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_26 = library(
+    pdb( "DB/2_2/GCGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A35:A36, A60:A61
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_27 = library(
+    pdb( "DB/2_2/CAUG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A36:A37, A59:A60
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_28 = library(
+    pdb( "DB/2_2/AUAU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A37:A38, A58:A59
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_29 = library(
+    pdb( "DB/2_4/UCGAAA/*.pdb.gz" )
+    #1:#2, #3:#6 <- A38:A39, A55:A58
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_30 = library(
+    pdb( "DB/2_2/CGCG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A39:A40, A54:A55
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_31 = library(
+    pdb( "DB/2_2/GAGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A40:A41, A53:A54
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_21 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A41:A42
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_22 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A42:A43
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_23 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A43:A44
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_24 = library(
+    pdb( "DB/ss2/AA/*.pdb.gz" )
+    #1:#2 <- A44:A45
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_25 = library(
+    pdb( "DB/ss2/AG/*.pdb.gz" )
+    #1:#2 <- A45:A46
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_26 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A46:A47
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_27 = library(
+    pdb( "DB/ss2/AA/*.pdb.gz" )
+    #1:#2 <- A47:A48
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_28 = library(
+    pdb( "DB/ss2/AC/*.pdb.gz" )
+    #1:#2 <- A48:A49
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_29 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A49:A50
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_30 = library(
+    pdb( "DB/ss2/GU/*.pdb.gz" )
+    #1:#2 <- A50:A51
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_31 = library(
+    pdb( "DB/ss2/UA/*.pdb.gz" )
+    #1:#2 <- A51:A52
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_32 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A98:A99
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_33 = library(
+    pdb( "DB/ss2/UC/*.pdb.gz" )
+    #1:#2 <- A97:A98
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_34 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A96:A97
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_32 = library(
+    pdb( "DB/2_2/UGCA/*.pdb.gz" )
+    #1:#2, #3:#4 <- A68:A69, A95:A96
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_33 = library(
+    pdb( "DB/2_2/GGCC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A69:A70, A94:A95
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_34 = library(
+    pdb( "DB/2_2/GUAC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A70:A71, A93:A94
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_35 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A71:A72
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_36 = library(
+    pdb( "DB/ss2/GU/*.pdb.gz" )
+    #1:#2 <- A72:A73
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_37 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A73:A74
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_38 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A74:A75
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_39 = library(
+    pdb( "DB/ss2/AA/*.pdb.gz" )
+    #1:#2 <- A75:A76
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_40 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A76:A77
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_41 = library(
+    pdb( "DB/ss2/UU/*.pdb.gz" )
+    #1:#2 <- A77:A78
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_42 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A78:A79
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_43 = library(
+    pdb( "DB/ss2/GC/*.pdb.gz" )
+    #1:#2 <- A79:A80
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_44 = library(
+    pdb( "DB/ss2/CA/*.pdb.gz" )
+    #1:#2 <- A80:A81
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_45 = library(
+    pdb( "DB/ss2/AG/*.pdb.gz" )
+    #1:#2 <- A81:A82
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_46 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A82:A83
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_47 = library(
+    pdb( "DB/ss2/AA/*.pdb.gz" )
+    #1:#2 <- A83:A84
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_48 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A84:A85
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_49 = library(
+    pdb( "DB/ss2/UC/*.pdb.gz" )
+    #1:#2 <- A85:A86
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_50 = library(
+    pdb( "DB/ss2/CC/*.pdb.gz" )
+    #1:#2 <- A86:A87
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_51 = library(
+    pdb( "DB/ss2/CC/*.pdb.gz" )
+    #1:#2 <- A87:A88
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_52 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A88:A89
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_53 = library(
+    pdb( "DB/ss2/GU/*.pdb.gz" )
+    #1:#2 <- A89:A90
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_54 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A90:A91
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_55 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A91:A92
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_56 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A63:A64
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_57 = library(
+    pdb( "DB/ss2/UA/*.pdb.gz" )
+    #1:#2 <- A64:A65
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_58 = library(
+    pdb( "DB/ss2/AC/*.pdb.gz" )
+    #1:#2 <- A65:A66
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_59 = library(
+    pdb( "DB/ss2/CU/*.pdb.gz" )
+    #1:#2 <- A66:A67
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_60 = library(
+    pdb( "DB/ss2/CA/*.pdb.gz" )
+    #1:#2 <- A15:A16
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_61 = library(
+    pdb( "DB/ss2/AA/*.pdb.gz" )
+    #1:#2 <- A16:A17
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_62 = library(
+    pdb( "DB/ss2/AC/*.pdb.gz" )
+    #1:#2 <- A17:A18
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_63 = library(
+    pdb( "DB/ss2/CG/*.pdb.gz" )
+    #1:#2 <- A18:A19
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_64 = library(
+    pdb( "DB/ss2/GG/*.pdb.gz" )
+    #1:#2 <- A19:A20
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_65 = library(
+    pdb( "DB/ss2/GA/*.pdb.gz" )
+    #1:#2 <- A20:A21
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_66 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A21:A22
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_67 = library(
+    pdb( "DB/ss2/UA/*.pdb.gz" )
+    #1:#2 <- A22:A23
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_68 = library(
+    pdb( "DB/ss2/AU/*.pdb.gz" )
+    #1:#2 <- A23:A24
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_69 = library(
+    pdb( "DB/ss2/UC/*.pdb.gz" )
+    #1:#2 <- A24:A25
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_70 = library(
+    pdb( "DB/ss2/CU/*.pdb.gz" )
+    #1:#2 <- A25:A26
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_71 = library(
+    pdb( "DB/ss2/UC/*.pdb.gz" )
+    #1:#2 <- A26:A27
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+// ===================== Backtrack =====================
+structure = backtrack
+(
+    ncm_01
+    merge( ncm_02  1.5 )
+    merge( ncm_03  1.5 )
+    merge( ncm_04  1.5 )
+    merge( ncm_05  1.5 )
+    merge( ncm_06  1.5 )
+    merge( ncm_07  1.5 )
+    merge( ncm_08  1.5 )
+    merge( ncm_09  1.5 )
+    merge( lnk_01  1.5 )
+    merge( lnk_02  1.5 )
+    merge( lnk_03  1.5 )
+    merge( lnk_04  1.5 )
+    merge( lnk_05  1.5 )
+    merge( lnk_06  1.5 )
+    merge( lnk_07  1.5 )
+    merge( ncm_10  1.5 )
+    merge( ncm_11  1.5 )
+    merge( ncm_12  1.5 )
+    merge( ncm_13  1.5 )
+    merge( lnk_08  1.5 )
+    merge( lnk_09  1.5 )
+    merge( ncm_14  1.5 )
+    merge( ncm_15  1.5 )
+    merge( ncm_16  1.5 )
+    merge( lnk_10  1.5 )
+    merge( lnk_11  1.5 )
+    merge( lnk_12  1.5 )
+    merge( ncm_17  1.5 )
+    merge( ncm_18  1.5 )
+    merge( ncm_19  1.5 )
+    merge( lnk_13  1.5 )
+    merge( lnk_14  1.5 )
+    merge( lnk_15  1.5 )
+    merge( lnk_16  1.5 )
+    merge( lnk_17  1.5 )
+    merge( lnk_18  1.5 )
+    merge( lnk_19  1.5 )
+    merge( ncm_20  1.5 )
+    merge( ncm_21  1.5 )
+    merge( ncm_22  1.5 )
+    merge( ncm_23  1.5 )
+    merge( lnk_20  1.5 )
+    merge( ncm_24  1.5 )
+    merge( ncm_25  1.5 )
+    merge( ncm_26  1.5 )
+    merge( ncm_27  1.5 )
+    merge( ncm_28  1.5 )
+    merge( ncm_29  1.5 )
+    merge( ncm_30  1.5 )
+    merge( ncm_31  1.5 )
+    merge( lnk_21  1.5 )
+    merge( lnk_22  1.5 )
+    merge( lnk_23  1.5 )
+    merge( lnk_24  1.5 )
+    merge( lnk_25  1.5 )
+    merge( lnk_26  1.5 )
+    merge( lnk_27  1.5 )
+    merge( lnk_28  1.5 )
+    merge( lnk_29  1.5 )
+    merge( lnk_30  1.5 )
+    merge( lnk_31  1.5 )
+    merge( lnk_32  1.5 )
+    merge( lnk_33  1.5 )
+    merge( lnk_34  1.5 )
+    merge( ncm_32  1.5 )
+    merge( ncm_33  1.5 )
+    merge( ncm_34  1.5 )
+    merge( lnk_35  1.5 )
+    merge( lnk_36  1.5 )
+    merge( lnk_37  1.5 )
+    merge( lnk_38  1.5 )
+    merge( lnk_39  1.5 )
+    merge( lnk_40  1.5 )
+    merge( lnk_41  1.5 )
+    merge( lnk_42  1.5 )
+    merge( lnk_43  1.5 )
+    merge( lnk_44  1.5 )
+    merge( lnk_45  1.5 )
+    merge( lnk_46  1.5 )
+    merge( lnk_47  1.5 )
+    merge( lnk_48  1.5 )
+    merge( lnk_49  1.5 )
+    merge( lnk_50  1.5 )
+    merge( lnk_51  1.5 )
+    merge( lnk_52  1.5 )
+    merge( lnk_53  1.5 )
+    merge( lnk_54  1.5 )
+    merge( lnk_55  1.5 )
+    merge( lnk_56  1.5 )
+    merge( lnk_57  1.5 )
+    merge( lnk_58  1.5 )
+    merge( lnk_59  1.5 )
+    merge( lnk_60  1.5 )
+    merge( lnk_61  1.5 )
+    merge( lnk_62  1.5 )
+    merge( lnk_63  1.5 )
+    merge( lnk_64  1.5 )
+    merge( lnk_65  1.5 )
+    merge( lnk_66  1.5 )
+    merge( lnk_67  1.5 )
+    merge( lnk_68  1.5 )
+    merge( lnk_69  1.5 )
+    merge( lnk_70  1.5 )
+    merge( lnk_71  1.5 )
+    //------ dangling ends --------
+    (  A6  A5  A4  A3  A2  A1  )
+    (  A160  A161  A162  A163  A164  )
+)
+
+// =================== Distance Restraints ===================
+distance(  A41:C1'    A42:C1'  0.0  10.2  )
+distance(  A41:C1'    A43:C1'  0.0  14.6  )
+distance(  A41:C1'    A44:C1'  0.0  19.0  )
+distance(  A41:C1'    A45:C1'  0.0  23.4  )
+distance(  A41:C1'    A46:C1'  0.0  27.8  )
+distance(  A41:C1'    A47:C1'  0.0  32.2  )
+distance(  A41:C1'    A48:C1'  0.0  36.6  )
+distance(  A41:C1'    A49:C1'  0.0  41.0  )
+distance(  A41:C1'    A50:C1'  0.0  45.4  )
+distance(  A41:C1'    A51:C1'  0.0  49.8  )
+distance(  A41:C1'    A52:C1'  0.0  54.2  )
+distance(  A42:C1'    A53:C1'  0.0  54.2  )
+distance(  A43:C1'    A53:C1'  0.0  49.8  )
+distance(  A44:C1'    A53:C1'  0.0  45.4  )
+distance(  A45:C1'    A53:C1'  0.0  41.0  )
+distance(  A46:C1'    A53:C1'  0.0  36.6  )
+distance(  A47:C1'    A53:C1'  0.0  32.2  )
+distance(  A48:C1'    A53:C1'  0.0  27.8  )
+distance(  A49:C1'    A53:C1'  0.0  23.4  )
+distance(  A50:C1'    A53:C1'  0.0  19.0  )
+distance(  A51:C1'    A53:C1'  0.0  14.6  )
+distance(  A52:C1'    A53:C1'  0.0  10.2  )
+distance(  A71:C1'    A72:C1'  0.0  10.2  )
+distance(  A71:C1'    A73:C1'  0.0  14.6  )
+distance(  A71:C1'    A74:C1'  0.0  19.0  )
+distance(  A71:C1'    A75:C1'  0.0  23.4  )
+distance(  A71:C1'    A76:C1'  0.0  27.8  )
+distance(  A71:C1'    A77:C1'  0.0  32.2  )
+distance(  A71:C1'    A78:C1'  0.0  36.6  )
+distance(  A71:C1'    A79:C1'  0.0  41.0  )
+distance(  A71:C1'    A80:C1'  0.0  45.4  )
+distance(  A71:C1'    A81:C1'  0.0  49.8  )
+distance(  A71:C1'    A82:C1'  0.0  54.2  )
+distance(  A71:C1'    A83:C1'  0.0  58.6  )
+distance(  A71:C1'    A84:C1'  0.0  63.0  )
+distance(  A71:C1'    A85:C1'  0.0  67.4  )
+distance(  A71:C1'    A86:C1'  0.0  71.8  )
+distance(  A71:C1'    A87:C1'  0.0  76.2  )
+distance(  A71:C1'    A88:C1'  0.0  80.6  )
+distance(  A71:C1'    A89:C1'  0.0  85.0  )
+distance(  A71:C1'    A90:C1'  0.0  89.4  )
+distance(  A71:C1'    A91:C1'  0.0  93.8  )
+distance(  A71:C1'    A92:C1'  0.0  98.2  )
+distance(  A72:C1'    A93:C1'  0.0  98.2  )
+distance(  A73:C1'    A93:C1'  0.0  93.8  )
+distance(  A74:C1'    A93:C1'  0.0  89.4  )
+distance(  A75:C1'    A93:C1'  0.0  85.0  )
+distance(  A76:C1'    A93:C1'  0.0  80.6  )
+distance(  A77:C1'    A93:C1'  0.0  76.2  )
+distance(  A78:C1'    A93:C1'  0.0  71.8  )
+distance(  A79:C1'    A93:C1'  0.0  67.4  )
+distance(  A80:C1'    A93:C1'  0.0  63.0  )
+distance(  A81:C1'    A93:C1'  0.0  58.6  )
+distance(  A82:C1'    A93:C1'  0.0  54.2  )
+distance(  A83:C1'    A93:C1'  0.0  49.8  )
+distance(  A84:C1'    A93:C1'  0.0  45.4  )
+distance(  A85:C1'    A93:C1'  0.0  41.0  )
+distance(  A86:C1'    A93:C1'  0.0  36.6  )
+distance(  A87:C1'    A93:C1'  0.0  32.2  )
+distance(  A88:C1'    A93:C1'  0.0  27.8  )
+distance(  A89:C1'    A93:C1'  0.0  23.4  )
+distance(  A90:C1'    A93:C1'  0.0  19.0  )
+distance(  A91:C1'    A93:C1'  0.0  14.6  )
+distance(  A92:C1'    A93:C1'  0.0  10.2  )
+distance(  A124:C1'    A125:C1'  0.0  10.2  )
+distance(  A124:C1'    A126:C1'  0.0  14.6  )
+distance(  A125:C1'    A127:C1'  0.0  14.6  )
+distance(  A126:C1'    A127:C1'  0.0  10.2  )
+distance(  A63:C1'    A64:C1'  0.0  10.2  )
+distance(  A63:C1'    A65:C1'  0.0  14.6  )
+distance(  A63:C1'    A66:C1'  0.0  19.0  )
+distance(  A63:C1'    A67:C1'  0.0  23.4  )
+distance(  A64:C1'    A68:C1'  0.0  23.4  )
+distance(  A65:C1'    A68:C1'  0.0  19.0  )
+distance(  A66:C1'    A68:C1'  0.0  14.6  )
+distance(  A67:C1'    A68:C1'  0.0  10.2  )
+distance(  A15:C1'    A16:C1'  0.0  10.2  )
+distance(  A15:C1'    A17:C1'  0.0  14.6  )
+distance(  A15:C1'    A18:C1'  0.0  19.0  )
+distance(  A15:C1'    A19:C1'  0.0  23.4  )
+distance(  A15:C1'    A20:C1'  0.0  27.8  )
+distance(  A15:C1'    A21:C1'  0.0  32.2  )
+distance(  A15:C1'    A22:C1'  0.0  36.6  )
+distance(  A15:C1'    A23:C1'  0.0  41.0  )
+distance(  A15:C1'    A24:C1'  0.0  45.4  )
+distance(  A15:C1'    A25:C1'  0.0  49.8  )
+distance(  A15:C1'    A26:C1'  0.0  54.2  )
+distance(  A15:C1'    A27:C1'  0.0  58.6  )
+distance(  A16:C1'    A28:C1'  0.0  58.6  )
+distance(  A17:C1'    A28:C1'  0.0  54.2  )
+distance(  A18:C1'    A28:C1'  0.0  49.8  )
+distance(  A19:C1'    A28:C1'  0.0  45.4  )
+distance(  A20:C1'    A28:C1'  0.0  41.0  )
+distance(  A21:C1'    A28:C1'  0.0  36.6  )
+distance(  A22:C1'    A28:C1'  0.0  32.2  )
+distance(  A23:C1'    A28:C1'  0.0  27.8  )
+distance(  A24:C1'    A28:C1'  0.0  23.4  )
+distance(  A25:C1'    A28:C1'  0.0  19.0  )
+distance(  A26:C1'    A28:C1'  0.0  14.6  )
+distance(  A27:C1'    A28:C1'  0.0  10.2  )
+// =================== Backtrack Restraints ===================
+clash
+(
+    structure
+    1.5 !( pse || lp || hydrogen )
+)
+backtrack_rst
+(
+    structure
+    width_limit  = 25%,
+    height_limit = 33%,
+    method       = probabilistic
+)
+// =================== Ribose Restraints ===================
+ribose_rst
+(
+    structure
+    method    = ccm,
+    pucker    = C3p_endo,
+    threshold = 2.0
+)
+// =================== Exploration Initialization =========
+explore
+(
+    structure
+    option(
+    model_limit = 1000,
+    time_limit  = 30m,
+    seed        = 3210 )
+    rmsd( 3.0 sidechain && !( pse || lp || hydrogen ) )
+    pdb( "struct_000003661" zipped )
+)

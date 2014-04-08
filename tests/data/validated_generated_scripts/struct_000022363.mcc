@@ -1,0 +1,252 @@
+// ==================== Sequence ====================
+
+sequence( r A1  GCGCAAGUGGUUUAGUGGUAAAAUCCAACGUUGCCAUCGUUGGGCCCCGGUUCGAUUCCGGGCUUGCGCACCA )
+//              (((((((((((..(((.(..))))((((((((...)))))))))))(((((...)..))))))))))))....
+
+// ==================== Relations ====================
+relation
+(
+A69:  A73 { file( "helixA_RNA" ) stack } 1
+)
+// ==================== Library ====================
+
+//----- Fragment 1 -----
+ncm_01 = library(
+    pdb( "DB/2_2/GCGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A1:A2, A68:A69
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_02 = library(
+    pdb( "DB/2_2/CGCG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A2:A3, A67:A68
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_03 = library(
+    pdb( "DB/2_2/GCGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A3:A4, A66:A67
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_04 = library(
+    pdb( "DB/2_2/CAUG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A4:A5, A65:A66
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_05 = library(
+    pdb( "DB/2_2/AAUU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A5:A6, A64:A65
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_06 = library(
+    pdb( "DB/2_2/AGCU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A6:A7, A63:A64
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_07 = library(
+    pdb( "DB/2_2/GUGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A7:A8, A62:A63
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_01 = library(
+    pdb( "DB/ss2/UG/*.pdb.gz" )
+    #1:#2 <- A8:A9
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 3 -----
+ncm_08 = library(
+    pdb( "DB/2_2/GGCC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A9:A10, A45:A46
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_09 = library(
+    pdb( "DB/2_2/GUGC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A10:A11, A44:A45
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_02 = library(
+    pdb( "DB/ss2/GG/*.pdb.gz" )
+    #1:#2 <- A43:A44
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_10 = library(
+    pdb( "DB/2_2/CCGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A25:A26, A42:A43
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_11 = library(
+    pdb( "DB/2_2/CAUG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A26:A27, A41:A42
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_12 = library(
+    pdb( "DB/2_2/AAUU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A27:A28, A40:A41
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_13 = library(
+    pdb( "DB/2_2/ACGU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A28:A29, A39:A40
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_14 = library(
+    pdb( "DB/2_2/CGCG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A29:A30, A38:A39
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_15 = library(
+    pdb( "DB/2_2/GUUC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A30:A31, A37:A38
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_16 = library(
+    pdb( "DB/2_2/UUAU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A31:A32, A36:A37
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_17 = library(
+    pdb( "DB/5/UGCCA/*.pdb.gz" )
+    #1:#5 <- A32:A36
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 4 -----
+lnk_03 = library(
+    pdb( "DB/ss2/UC/*.pdb.gz" )
+    #1:#2 <- A24:A25
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_18 = library(
+    pdb( "DB/2_2/AGAU/*.pdb.gz" )
+    #1:#2, #3:#4 <- A14:A15, A23:A24
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_19 = library(
+    pdb( "DB/2_2/GUAA/*.pdb.gz" )
+    #1:#2, #3:#4 <- A15:A16, A22:A23
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_20 = library(
+    pdb( "DB/3_2/UGGAA/*.pdb.gz" )
+    #1:#3, #4:#5 <- A16:A18, A21:A22
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_21 = library(
+    pdb( "DB/4/GUAA/*.pdb.gz" )
+    #1:#4 <- A18:A21
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_04 = library(
+    pdb( "DB/ss2/CC/*.pdb.gz" )
+    #1:#2 <- A46:A47
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+//----- Fragment 6 -----
+ncm_22 = library(
+    pdb( "DB/2_2/CCGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A47:A48, A60:A61
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_23 = library(
+    pdb( "DB/2_2/CGCG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A48:A49, A59:A60
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_24 = library(
+    pdb( "DB/2_2/GGCC/*.pdb.gz" )
+    #1:#2, #3:#4 <- A49:A50, A58:A59
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_25 = library(
+    pdb( "DB/2_4/GUAUUC/*.pdb.gz" )
+    #1:#2, #3:#6 <- A50:A51, A55:A58
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_26 = library(
+    pdb( "DB/5/UUCGA/*.pdb.gz" )
+    #1:#5 <- A51:A55
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_05 = library(
+    pdb( "DB/ss2/UU/*.pdb.gz" )
+    #1:#2 <- A11:A12
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+lnk_06 = library(
+    pdb( "DB/ss2/UU/*.pdb.gz" )
+    #1:#2 <- A12:A13
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+// ===================== Backtrack =====================
+structure = backtrack
+(
+    ncm_01
+    merge( ncm_02  1.5 )
+    merge( ncm_03  1.5 )
+    merge( ncm_04  1.5 )
+    merge( ncm_05  1.5 )
+    merge( ncm_06  1.5 )
+    merge( ncm_07  1.5 )
+    merge( lnk_01  1.5 )
+    merge( ncm_08  1.5 )
+    merge( ncm_09  1.5 )
+    merge( lnk_02  1.5 )
+    merge( ncm_10  1.5 )
+    merge( ncm_11  1.5 )
+    merge( ncm_12  1.5 )
+    merge( ncm_13  1.5 )
+    merge( ncm_14  1.5 )
+    merge( ncm_15  1.5 )
+    merge( ncm_16  1.5 )
+    merge( ncm_17  1.5 )
+    merge( lnk_03  1.5 )
+    merge( ncm_18  1.5 )
+    merge( ncm_19  1.5 )
+    merge( ncm_20  1.5 )
+    merge( ncm_21  1.5 )
+    merge( lnk_04  1.5 )
+    merge( ncm_22  1.5 )
+    merge( ncm_23  1.5 )
+    merge( ncm_24  1.5 )
+    merge( ncm_25  1.5 )
+    merge( ncm_26  1.5 )
+    merge( lnk_05  1.5 )
+    merge( lnk_06  1.5 )
+    //------ dangling ends --------
+    (  A69  A70  A71  A72  A73  )
+)
+
+// =================== Distance Restraints ===================
+distance(  A11:C1'    A12:C1'  0.0  10.2  )
+distance(  A11:C1'    A13:C1'  0.0  14.6  )
+distance(  A12:C1'    A14:C1'  0.0  14.6  )
+distance(  A13:C1'    A14:C1'  0.0  10.2  )
+// =================== Backtrack Restraints ===================
+clash
+(
+    structure
+    1.5 !( pse || lp || hydrogen )
+)
+backtrack_rst
+(
+    structure
+    width_limit  = 25%,
+    height_limit = 33%,
+    method       = probabilistic
+)
+// =================== Ribose Restraints ===================
+ribose_rst
+(
+    structure
+    method    = ccm,
+    pucker    = C3p_endo,
+    threshold = 2.0
+)
+// =================== Exploration Initialization =========
+explore
+(
+    structure
+    option(
+    model_limit = 1000,
+    time_limit  = 30m,
+    seed        = 3210 )
+    rmsd( 3.0 sidechain && !( pse || lp || hydrogen ) )
+    pdb( "struct_000022363" zipped )
+)

@@ -1,0 +1,88 @@
+// ==================== Sequence ====================
+
+sequence( r A1  CUAGUACGAGGGGACCG )
+//              ..((((((..)))).))
+
+// ==================== Relations ====================
+relation
+(
+A1:  A3 { file( "helixA_RNA" ) stack } 1
+)
+// ==================== Library ====================
+
+//----- Fragment 1 -----
+ncm_01 = library(
+    pdb( "DB/2_2/AGCG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A3:A4, A16:A17
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_02 = library(
+    pdb( "DB/2_3/GUACC/*.pdb.gz" )
+    #1:#2, #3:#5 <- A4:A5, A14:A16
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_03 = library(
+    pdb( "DB/2_2/UAGA/*.pdb.gz" )
+    #1:#2, #3:#4 <- A5:A6, A13:A14
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_04 = library(
+    pdb( "DB/2_2/ACGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A6:A7, A12:A13
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_05 = library(
+    pdb( "DB/2_2/CGGG/*.pdb.gz" )
+    #1:#2, #3:#4 <- A7:A8, A11:A12
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+ncm_06 = library(
+    pdb( "DB/4/GAGG/*.pdb.gz" )
+    #1:#4 <- A8:A11
+//  rmsd( 0.5 sidechain && !( pse || lp || hydrogen ) ) 
+)
+// ===================== Backtrack =====================
+structure = backtrack
+(
+    ncm_01
+    merge( ncm_02  1.5 )
+    merge( ncm_03  1.5 )
+    merge( ncm_04  1.5 )
+    merge( ncm_05  1.5 )
+    merge( ncm_06  1.5 )
+    //------ dangling ends --------
+    (  A3  A2  A1  )
+)
+
+// =================== Backtrack Restraints ===================
+clash
+(
+    structure
+    1.5 !( pse || lp || hydrogen )
+)
+backtrack_rst
+(
+    structure
+    width_limit  = 25%,
+    height_limit = 33%,
+    method       = probabilistic
+)
+// =================== Ribose Restraints ===================
+ribose_rst
+(
+    structure
+    method    = ccm,
+    pucker    = C3p_endo,
+    threshold = 2.0
+)
+// =================== Exploration Initialization =========
+explore
+(
+    structure
+    option(
+    model_limit = 1000,
+    time_limit  = 30m,
+    seed        = 3210 )
+    rmsd( 3.0 sidechain && !( pse || lp || hydrogen ) )
+    pdb( "struct_000056822" zipped )
+)

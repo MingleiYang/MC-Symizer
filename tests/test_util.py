@@ -36,7 +36,7 @@ class UtilTest(unittest.TestCase):
         # build all the paths
         self.MCSYMIZER_PATH = os.path.abspath(os.path.join(os.curdir, "src", "mcsymizer.py"))
         self.DATA_ARCHIVE = os.path.abspath(os.path.join(os.curdir, "tests", "data.tar.gz"))
-        self.DATA_DIR = os.path.abspath(os.path.join(os.curdir, "tests" "data"))
+        self.DATA_DIR = os.path.abspath(os.path.join(os.curdir, "tests", "data"))
 
         # download and create the DATASET if needed
         if not os.path.exists(self.DATA_DIR):
